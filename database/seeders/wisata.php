@@ -58,7 +58,7 @@ class wisata extends Seeder
             [
                 'nama_wisata' => 'Candi Gunung Gangsir',
                 'deskripsi_wisata' => 'Candi peninggalan sejarah di Pasuruan.',
-                'harga_tiket' => 'Gratis',
+                'harga_tiket' => '5000',
                 'foto_wisata' => 'candi.jpeg',
                 'kategori_wisata' => $sejarah->id,
                 'jam_buka' => '08:00',
@@ -70,7 +70,7 @@ class wisata extends Seeder
             [
                 'nama_wisata' => 'Masjid Cheng Hoo Pasuruan',
                 'deskripsi_wisata' => 'Masjid unik bernuansa Tionghoa.',
-                'harga_tiket' => 'Gratis',
+                'harga_tiket' => '5000',
                 'foto_wisata' => 'masjid.jpg',
                 'kategori_wisata' => $religi->id,
                 'jam_buka' => '04:00',

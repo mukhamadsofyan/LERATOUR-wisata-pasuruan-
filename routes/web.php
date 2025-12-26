@@ -13,12 +13,26 @@ use App\Http\Controllers\admin\{
     SliderController,
     TiketController
 };
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
 | PUBLIC / GUEST
 |--------------------------------------------------------------------------
 */
+
+    Route::get('/test-mail', function () {
+        Mail::raw('Tes Gmail SMTP berhasil', function ($m) {
+            $m->to('emailuser@gmail.com')->subject('Tes Gmail OTP');
+        });
+
+        return 'Email terkirim';
+    });
+
+    Route::get('/verify-email', [AuthController::class, 'form'])->name('verify.form');
+    Route::post('/verify-email', [AuthController::class, 'verify'])->name('verify.process');
+    Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
+
 
 Route::get('/', [LandingpageHomeController::class, 'index'])
     ->name('landingpage.home');

@@ -1,0 +1,137 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+    background: #f5f7fb;
+}
+
+.wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 720px;
+    padding: 50px 40px;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+/* ICON */
+.icon-success {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #3ad97f, #1fbf6b);
+    color: white;
+    font-size: 34px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+/* TITLE */
+h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #6b7280;
+    font-size: 15px;
+    margin-bottom: 35px;
+}
+
+/* STEP BOX */
+.step-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.step {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.step:last-child {
+    margin-bottom: 0;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.step h4 {
+    font-size: 16px;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.step p {
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+/* NOTE */
+.note {
+    border-left: 4px solid #2563eb;
+    background: #f8fafc;
+    padding: 20px;
+    text-align: left;
+    border-radius: 8px;
+    margin-bottom: 35px;
+}
+
+.note h4 {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+
+.note p {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+/* BUTTON */
+.btn-back {
+    display: inline-block;
+    background: #7ef04f;
+    color: #0f172a;
+    padding: 14px 36px;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-back:hover {
+    background: #6ae53d;
+    transform: translateY(-2px);
+}

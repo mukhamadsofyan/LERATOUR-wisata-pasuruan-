@@ -294,7 +294,7 @@
                         </div>
 
                         <div class="text-center pt-30">
-                            © Copyright Viatours 2023
+                            © Copyright LERATOUR 2025
                         </div>
 
                     </div>

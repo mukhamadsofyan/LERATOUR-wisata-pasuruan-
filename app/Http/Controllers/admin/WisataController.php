@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\wisatamodels;
 use App\Models\Kategori;
 use App\Models\KategoriModel;
+use App\Models\testimonimodel;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class WisataController extends Controller
 {
@@ -16,7 +20,74 @@ class WisataController extends Controller
     // =========================
     public function index()
     {
-        return view('admin.beranda');
+        // total pendapatan
+        $totalPembelianTiket = Transaksi::where('payment_status', 'settlement')
+            ->sum('jumlah_tiket');
+
+        // ==========================
+        // TOTAL PENDAPATAN HARI INI
+        // (ambil dari total_bayar)
+        // ==========================
+        $pendapatanHariIni = Transaksi::where('payment_status', 'settlement')
+            ->whereDate('created_at', Carbon::today())
+            ->sum('total_bayar');
+        // =========================
+        // HARIAN (per jam - hari ini)
+        // =========================
+        $harian = Transaksi::select(
+            DB::raw('HOUR(created_at) as label'),
+            DB::raw('SUM(total_bayar) as total')
+        )
+            ->where('payment_status', 'settlement')
+            ->whereDate('created_at', Carbon::today())
+            ->groupBy('label')
+            ->orderBy('label')
+            ->get();
+
+        // =========================
+        // MINGGUAN (7 hari terakhir)
+        // =========================
+        $mingguan = Transaksi::select(
+            DB::raw('DATE(created_at) as label'),
+            DB::raw('SUM(total_bayar) as total')
+        )
+            ->where('payment_status', 'settlement')
+            ->whereBetween('created_at', [
+                Carbon::now()->subDays(6)->startOfDay(),
+                Carbon::now()->endOfDay()
+            ])
+            ->groupBy('label')
+            ->orderBy('label')
+            ->get();
+
+        // =========================
+        // BULANAN (tahun ini)
+        // =========================
+        $bulanan = Transaksi::select(
+            DB::raw('MONTH(created_at) as label'),
+            DB::raw('SUM(total_bayar) as total')
+        )
+            ->where('payment_status', 'settlement')
+            ->whereYear('created_at', Carbon::now()->year)
+            ->groupBy('label')
+            ->orderBy('label')
+            ->get();
+
+        /////////////Card 2
+        $wisatatotal = wisatamodels::count();
+        $kategoritotal = KategoriModel::count();
+        $testimonitotal = testimonimodel::count();
+
+        return view('admin.beranda', compact(
+            'totalPembelianTiket',
+            'pendapatanHariIni',
+            'harian',
+            'mingguan',
+            'bulanan',
+            'wisatatotal',
+            'kategoritotal',
+            'testimonitotal'
+        ));
     }
 
     // =========================
@@ -37,6 +108,7 @@ class WisataController extends Controller
     // =========================
     public function tambahwisata()
     {
+
         // ambil kategori untuk dropdown
         $kategori = KategoriModel::orderBy('kategori')->get();
 
@@ -48,11 +120,12 @@ class WisataController extends Controller
     // =========================
     public function insertwisata(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             'nama_wisata'      => 'required|string|max:255',
             'deskripsi_wisata' => 'required|string',
-            'harga_tiket'      => 'required|string',
-            'kategori_wisata'  => 'required|string',
+            'harga_tiket'      => 'required',
+            'kategori_wisata'  => 'required',
             'jam_buka'         => 'nullable|string',
             'jam_tutup'        => 'nullable|string',
             'fasilitas'        => 'nullable|string',
@@ -94,8 +167,8 @@ class WisataController extends Controller
         $validatedData = $request->validate([
             'nama_wisata'      => 'required|string|max:255',
             'deskripsi_wisata' => 'required|string',
-            'harga_tiket'      => 'required|string',
-            'kategori_wisata'  => 'required|string',
+            'harga_tiket'      => 'required',
+            'kategori_wisata'  => 'required',
             'jam_buka'         => 'nullable|string',
             'jam_tutup'        => 'nullable|string',
             'fasilitas'        => 'nullable|string',

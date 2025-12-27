@@ -57,6 +57,21 @@
         font-size: 14px;
         color: #666;
     }
+
+    /* =========================
+   LINE CLAMP 2 BARIS
+========================= */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        /* jumlah baris */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.5em;
+        min-height: 3em;
+        /* jaga tinggi supaya grid sejajar */
+    }
 </style>
 
 <body>
@@ -401,7 +416,7 @@
                             <div class="tourCard -type-1 py-10 px-10 border-1 rounded-12  -hover-shadow">
                                 <div class="tourCard__header">
                                     <div class="tourCard__image ratio ratio-28:20">
-                                        <img src="{{ asset('storage/wisata/' . $item->foto_wisata) }}"
+                                        <img src="{{ asset('storage/' . $item->foto_wisata) }}"
                                             alt="{{ $item->nama_wisata }}" class="img-ratio rounded-12 object-cover">
                                     </div>
 
@@ -423,8 +438,11 @@
                                     {{ $item->deskripsi_wisata }}
                                 </p> --}}
                                     <div class="tourCard__rating d-flex items-center text-13 mt-5">
-                                        <span class="text-dark-1 ml-10">{{ $item->deskripsi_wisata }}</span>
+                                        <span class="text-dark-1 ml-10 line-clamp-2">
+                                            {{ $item->deskripsi_wisata }}
+                                        </span>
                                     </div>
+
 
                                     <div
                                         class="d-flex justify-between items-center border-1-top text-13 text-dark-1 pt-10 mt-10">
@@ -477,15 +495,22 @@
                                     <input type="text" id="modalHargaTiket" readonly>
                                 </div>
 
-                                <div class="form-input mb-10">
-                                    <label>Nama Pemesan</label>
-                                    <input type="text" name="nama_pemesan" required>
-                                </div>
+                                @auth
+                                    <div class="form-input mb-10">
+                                        <label>Nama Pemesan</label>
+                                        <input type="text" name="nama_pemesan" value="{{ Auth::user()->name }}" readonly>
+                                    </div>
 
-                                <div class="form-input mb-10">
-                                    <label>Email</label>
-                                    <input type="email" name="email" required>
-                                </div>
+                                    <div class="form-input mb-10">
+                                        <label>Email</label>
+                                        <input type="email" name="email" value="{{ Auth::user()->email }}" readonly>
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning">
+                                        Silakan login terlebih dahulu untuk membeli tiket
+                                    </div>
+                                @endauth
+
 
                                 <div class="form-input mb-10">
                                     <label>Jumlah Tiket</label>
@@ -527,7 +552,7 @@
                         <a href="javascript:void(0)" class="featureCard -type-7 -hover-image-scale"
                             onclick="openWisataModal(
         '{{ $item->nama_wisata }}',
-        '{{ asset('storage/wisata/' . $item->foto_wisata) }}',
+        '{{ asset('storage/' . $item->foto_wisata) }}',
         '{{ $item->harga_tiket }}',
         '{{ $item->total_tiket }}',
         `{{ $item->deskripsi_wisata ?? 'Belum ada deskripsi wisata.' }}`
@@ -548,7 +573,7 @@
                             <a href="javascript:void(0)" class="featureCard -type-7 -hover-image-scale"
                                 onclick="openWisataModal(
         '{{ $item->nama_wisata }}',
-        '{{ asset('storage/wisata/' . $item->foto_wisata) }}',
+        '{{ asset('storage/' . $item->foto_wisata) }}',
         '{{ $item->harga_tiket }}',
         '{{ $item->total_tiket }}',
         `{{ $item->deskripsi_wisata ?? 'Belum ada deskripsi wisata.' }}`
@@ -558,7 +583,7 @@
 
                                 <!-- IMAGE -->
                                 <div class="featureCard__image ratio ratio-23:30 -hover-image-scale__image rounded-12">
-                                    <img src="{{ asset('storage/wisata/' . $item->foto_wisata) }}"
+                                    <img src="{{ asset('storage/' . $item->foto_wisata) }}"
                                         alt="{{ $item->nama_wisata }}" class="img-ratio rounded-12 object-cover">
                                 </div>
 

@@ -126,7 +126,7 @@ Route::middleware(['auth', 'admin'])
         Route::post('/admin/insertkategori', [KategoriController::class, 'insertkategori'])->name('admin.insertkategori');
         Route::get('/admin/editkategori/{id}', [KategoriController::class, 'editkategori'])->name('admin.editkategori');
         Route::put('/admin/updatekategori/{id}', [KategoriController::class, 'updatekategori'])->name('admin.updatekategori');
-        Route::delete('/admin/hapuskategori/{id}', [KategoriController::class, 'hapuskategori'])->name('admin.hapuskategori');
+        Route::delete('/admin/hapuskategori/{id}', [KategoriController::class, 'destroy'])->name('admin.hapuskategori');
 
         // Wisata
         Route::get('/admin/wisata', [WisataController::class, 'wisata'])->name('admin.wisata');

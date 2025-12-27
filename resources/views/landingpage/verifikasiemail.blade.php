@@ -190,7 +190,7 @@
                                 <div class="otp-wrapper">
                                     @for ($i = 0; $i < 6; $i++)
                                     <input type="text" maxlength="1" class="otp-input otp-soft otp-digit"
-                                    inputmode="numeric" required>
+                                    inputmode="numeric" placeholder="*" required>
                                     @endfor
                                     <input type="hidden" name="email" value="{{ session('email') }}">
                                     <input type="hidden" name="code" id="otp_code">

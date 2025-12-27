@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             kategori::class,
             wisata::class,
+            TestimoniSeeder::class
         ]);
     }
 }

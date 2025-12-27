@@ -107,7 +107,7 @@
                                 {{-- NAMA WISATA --}}
                                 <div class="col-md-6">
                                     <div class="form-input">
-                                        <input type="text" name="kategori" value="{{ old('kategori', $kategori->kategori) }}}"
+                                        <input type="text" name="kategori" value="{{ old('kategori', $kategori->kategori) }}"
                                             required>
                                         <label class="lh-1 text-16 text-light-1">Nama Kategori</label>
                                     </div>
@@ -124,7 +124,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>

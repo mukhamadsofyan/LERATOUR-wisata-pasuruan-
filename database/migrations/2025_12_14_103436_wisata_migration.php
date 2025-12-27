@@ -18,7 +18,7 @@ return new class extends Migration
             // $table->string('lokasi_wisata')->nullable();
             $table->string('harga_tiket')->nullable();
             $table->string('foto_wisata')->nullable();
-            $table->string('kategori_wisata')->nullable();
+            $table->integer('kategori_wisata')->nullable();
             $table->string('jam_buka')->nullable();
             $table->string('jam_tutup')->nullable();
             $table->text('fasilitas')->nullable();

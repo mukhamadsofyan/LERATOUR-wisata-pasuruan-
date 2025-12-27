@@ -117,11 +117,12 @@
                                         <select name="kategori_wisata" required>
                                             <option value="">-- Pilih Kategori --</option>
                                             @foreach ($kategori as $item)
-                                                <option value="{{ $item->kategori }}">
+                                                <option value="{{ $item->id }}">
                                                     {{ $item->kategori }}
                                                 </option>
                                             @endforeach
                                         </select>
+
                                         {{-- <label class="lh-1 text-16 text-light-1">Kategori Wisata</label> --}}
                                     </div>
                                 </div>
@@ -196,9 +197,11 @@
                                         <div class="size-200 rounded-12 border-dash-1 bg-accent-1-05 flex-center flex-column"
                                             style="position:relative;">
 
-                                            <input type="file" name="foto_wisata" accept="image/*" required
+                                            <input type="file" name="foto_wisata" accept="image/*"
+                                                {{ isset($wisata) ? '' : 'required' }}
                                                 style="opacity:0;position:absolute;width:200px;height:200px;cursor:pointer;"
                                                 onchange="previewImage(event)">
+
 
                                             <div class="text-16 fw-500 text-accent-1 mt-10">
                                                 Upload Image
@@ -228,7 +231,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>

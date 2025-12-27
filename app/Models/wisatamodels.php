@@ -23,6 +23,7 @@ class wisatamodels extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(KategoriModel::class, 'kategori_wisata', 'kategori');
+        return $this->belongsTo(KategoriModel::class, 'kategori_wisata', 'id');
+
     }
 }

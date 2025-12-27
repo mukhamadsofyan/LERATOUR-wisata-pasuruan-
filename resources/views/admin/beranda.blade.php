@@ -4,6 +4,29 @@
 
 <!-- Mirrored from creativelayers.net/themes/viatours-html/db-main.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 13 Dec 2025 17:58:40 GMT -->
 @include('layout.head')
+<style>
+    /* =========================
+   MODERN CHART STYLE
+========================= */
+    .tabs__pane {
+        min-height: 340px;
+        padding-top: 10px;
+    }
+
+    .tabs__pane canvas {
+        width: 100% !important;
+        height: 300px !important;
+    }
+
+    .chart-container {
+        position: relative;
+    }
+
+    /* Tooltip custom feel */
+    .chartjs-tooltip {
+        border-radius: 12px !important;
+    }
+</style>
 
 <body>
     @include('layout.preloader')
@@ -91,7 +114,7 @@
                 <div class="dashboard__content_content">
 
                     <h1 class="text-30">Dashboard</h1>
-                    <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                    <p class="">Halaman dashboard tentang LERATOUR</p>
 
                     <div class="row y-gap-30 pt-60 md:pt-30">
 
@@ -99,11 +122,12 @@
                             <div class="rounded-12 bg-white shadow-2 px-30 py-30 h-full">
                                 <div class="row y-gap-20 items-center justify-between">
                                     <div class="col-auto">
-                                        <div>Total Earnings</div>
-                                        <div class="text-30 fw-700">$10,800</div>
+                                        <div>Total Pembelian Tiket</div>
+                                        <div class="text-30 fw-700">{{ $totalPembelianTiket }}</div>
 
                                         <div>
-                                            <span class="text-accent-1">$50</span> Today
+                                            <span class="text-accent-1">Rp
+                                                {{ number_format($pendapatanHariIni, 0, ',', '.') }}</span> Hari Ini
                                         </div>
                                     </div>
 
@@ -120,11 +144,11 @@
                             <div class="rounded-12 bg-white shadow-2 px-30 py-30 h-full">
                                 <div class="row y-gap-20 items-center justify-between">
                                     <div class="col-auto">
-                                        <div>Total Pending</div>
-                                        <div class="text-30 fw-700">$12,800</div>
+                                        <div>Total Wisata</div>
+                                        <div class="text-30 fw-700">{{ $wisatatotal }}</div>
 
                                         <div>
-                                            <span class="text-accent-1">40+</span> Today
+                                            <span class="text-accent-1"></span> Per Hari Ini
                                         </div>
                                     </div>
 
@@ -141,11 +165,11 @@
                             <div class="rounded-12 bg-white shadow-2 px-30 py-30 h-full">
                                 <div class="row y-gap-20 items-center justify-between">
                                     <div class="col-auto">
-                                        <div>Total Booking</div>
-                                        <div class="text-30 fw-700">$54,800</div>
+                                        <div>Total Kategori Wisata</div>
+                                        <div class="text-30 fw-700">{{ $kategoritotal }}</div>
 
                                         <div>
-                                            <span class="text-accent-1">90+</span> Today
+                                            <span class="text-accent-1"></span> Per Hari Ini
                                         </div>
                                     </div>
 
@@ -162,11 +186,11 @@
                             <div class="rounded-12 bg-white shadow-2 px-30 py-30 h-full">
                                 <div class="row y-gap-20 items-center justify-between">
                                     <div class="col-auto">
-                                        <div>Wishlist</div>
-                                        <div class="text-30 fw-700">1834</div>
+                                        <div>Total Testimoni</div>
+                                        <div class="text-30 fw-700">{{ $testimonitotal }}</div>
 
                                         <div>
-                                            <span class="text-accent-1">290+</span> New Instructors
+                                            <span class="text-accent-1"></span> Per Hari Ini
                                         </div>
                                     </div>
 
@@ -187,7 +211,7 @@
                                 <div class="pt-20 px-30">
                                     <div class="tabs -underline-2 js-tabs">
                                         <div class="d-flex items-center justify-between">
-                                            <div class="text-18 fw-500">Earning Statistics</div>
+                                            <div class="text-18 fw-500">Grafik Pendapatan</div>
 
                                             <div
                                                 class="tabs__controls row x-gap-20 y-gap-10 lg:x-gap-20 js-tabs-controls">
@@ -213,21 +237,18 @@
                                             </div>
                                         </div>
 
-                                        <div class="tabs__content pt-30 js-tabs-content">
-
-                                            <div class="tabs__pane -tab-item-1 is-tab-el-active">
-                                                <canvas id="lineChart"></canvas>
-                                            </div>
-
-                                            <div class="tabs__pane -tab-item-2 ">
-                                                <canvas id="lineChart"></canvas>
-                                            </div>
-
-                                            <div class="tabs__pane -tab-item-3 ">
-                                                <canvas id="lineChart"></canvas>
-                                            </div>
-
+                                        <div class="tabs__pane -tab-item-1 is-tab-el-active">
+                                            <canvas id="chart-harian"></canvas>
                                         </div>
+
+                                        <div class="tabs__pane -tab-item-2">
+                                            <canvas id="chart-mingguan"></canvas>
+                                        </div>
+
+                                        <div class="tabs__pane -tab-item-3">
+                                            <canvas id="chart-bulanan"></canvas>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +347,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>
@@ -336,6 +357,205 @@
 
     <!-- JavaScript -->
     @include('layout.js')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            /* ===============================
+               DATA DARI BACKEND (LARAVEL)
+            =============================== */
+            const harianLabelsRaw = @json($harian->pluck('label'));
+            const harianDataRaw = @json($harian->pluck('total'));
+
+            const mingguanLabelsRaw = @json($mingguan->pluck('label'));
+            const mingguanDataRaw = @json($mingguan->pluck('total'));
+
+            const bulananLabelsRaw = @json($bulanan->pluck('label'));
+            const bulananDataRaw = @json($bulanan->pluck('total'));
+
+            /* ===============================
+               FORMAT LABEL
+            =============================== */
+            const harianLabels = harianLabelsRaw.map(j => j + ':00');
+            const mingguanLabels = mingguanLabelsRaw.map(d =>
+                new Date(d).toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'short'
+                })
+            );
+            const bulananLabels = bulananLabelsRaw.map(b =>
+                new Date(2025, b - 1).toLocaleDateString('id-ID', {
+                    month: 'short'
+                })
+            );
+
+            const harianData = harianDataRaw.map(Number);
+            const mingguanData = mingguanDataRaw.map(Number);
+            const bulananData = bulananDataRaw.map(Number);
+
+            /* ===============================
+               NORMALISASI (ANTI 1 TITIK)
+            =============================== */
+            function normalizeData(labels, data) {
+                if (data.length < 2) {
+                    return {
+                        labels: ['06:00', '08:00', '10:00', '12:00', '14:00'],
+                        data: [0, 0, data[0] ?? 0, 0, 0]
+                    };
+                }
+                return {
+                    labels,
+                    data
+                };
+            }
+
+            /* ===============================
+               BASELINE PLUGIN
+            =============================== */
+            const baselinePlugin = {
+                id: 'baseline',
+                beforeDraw(chart) {
+                    const {
+                        ctx,
+                        chartArea
+                    } = chart;
+                    ctx.save();
+                    ctx.strokeStyle = 'rgba(79,70,229,0.3)';
+                    ctx.setLineDash([6, 6]);
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(chartArea.left, chartArea.bottom);
+                    ctx.lineTo(chartArea.right, chartArea.bottom);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            };
+
+            /* ===============================
+               CREATE CHART
+            =============================== */
+            function createLineChart(canvas, labels, data) {
+
+                const ctx = canvas.getContext('2d');
+
+                const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+                gradient.addColorStop(0, 'rgba(79,70,229,0.45)');
+                gradient.addColorStop(1, 'rgba(79,70,229,0.05)');
+
+                const maxVal = Math.max(...data, 1);
+
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Pendapatan',
+                            data,
+                            borderColor: '#4F46E5',
+                            backgroundColor: gradient,
+                            fill: true,
+                            borderWidth: 3,
+                            tension: 0.45,
+                            pointRadius: 4,
+                            pointHoverRadius: 7,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#4F46E5',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: {
+                            duration: 1200,
+                            easing: 'easeOutQuart'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: '#0f172a',
+                                padding: 14,
+                                cornerRadius: 10,
+                                displayColors: false,
+                                callbacks: {
+                                    label: ctx =>
+                                        'Rp ' + ctx.parsed.y.toLocaleString('id-ID')
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#64748b',
+                                    font: {
+                                        size: 12,
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                max: maxVal * 1.3,
+                                grid: {
+                                    color: 'rgba(148,163,184,0.15)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    stepSize: Math.ceil(maxVal / 4) || 100000,
+                                    color: '#64748b',
+                                    callback: v => 'Rp ' + v.toLocaleString('id-ID')
+                                }
+                            }
+                        }
+                    },
+                    plugins: [baselinePlugin]
+                });
+            }
+
+            /* ===============================
+               LOAD PER TAB (LAZY LOAD)
+            =============================== */
+            const charts = {};
+
+            function loadChart(tabClass, labels, data) {
+                if (charts[tabClass]) return;
+                const canvas = document.querySelector(`${tabClass} canvas`);
+                if (!canvas) return;
+                const normalized = normalizeData(labels, data);
+                charts[tabClass] = createLineChart(
+                    canvas,
+                    normalized.labels,
+                    normalized.data
+                );
+            }
+
+            // Default load
+            loadChart('.-tab-item-1', harianLabels, harianData);
+
+            document.querySelectorAll('.js-tabs-button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.tabTarget;
+                    if (target === '.-tab-item-1')
+                        loadChart(target, harianLabels, harianData);
+                    if (target === '.-tab-item-2')
+                        loadChart(target, mingguanLabels, mingguanData);
+                    if (target === '.-tab-item-3')
+                        loadChart(target, bulananLabels, bulananData);
+                });
+            });
+
+        });
+    </script>
+
+
+
+
 </body>
 
 

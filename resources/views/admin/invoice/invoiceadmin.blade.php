@@ -284,12 +284,12 @@
                                                             Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
                                                         </td>
                                                         <td>
-                                                            @if ($item->payment_status == 'paid')
-                                                                <span class="text-green-2">PAID</span>
+                                                            @if ($item->payment_status == 'settlement')
+                                                                <span class="text-green-2">Lunas</span>
                                                             @elseif ($item->payment_status == 'pending')
                                                                 <span class="text-yellow-2">PENDING</span>
                                                             @else
-                                                                <span class="text-red-1">FAILED</span>
+                                                                <span class="text-red-1">Gagal</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ strtoupper($item->payment_method ?? '-') }}</td>
@@ -379,7 +379,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
 

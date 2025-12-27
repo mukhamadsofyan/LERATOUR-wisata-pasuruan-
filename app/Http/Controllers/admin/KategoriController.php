@@ -11,7 +11,9 @@ class KategoriController extends Controller
     // ================= INDEX =================
     public function kategori()
     {
-        $kategori = KategoriModel::orderBy('id', 'desc')->paginate(10);
+        $kategori = KategoriModel::withCount('wisatas')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
         return view('admin.kategori.kategori', compact('kategori'));
     }
 

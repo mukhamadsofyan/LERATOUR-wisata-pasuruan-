@@ -13,6 +13,7 @@
         <div class="dashboard -is-sidebar-visible js-dashboard">
             @include('layout.sidebar')
             <div class="dashboard__content">
+                @yield('content')
                 <div class="dashboard__content_header">
                     <div class="d-flex items-center">
                         <div class="mr-60">
@@ -131,9 +132,9 @@
 
                                                 <td>{{ $item->kategori }}</td>
 
-                                                {{-- <td>
+                                                <td>
                                                     {{ $item->wisatas->count() }}
-                                                </td> --}}
+                                                </td>
 
                                                 <td>
                                                     <div class="circle text-green-2">
@@ -225,7 +226,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>
@@ -272,6 +273,7 @@
             });
         });
     </script>
+
 
 </body>
 

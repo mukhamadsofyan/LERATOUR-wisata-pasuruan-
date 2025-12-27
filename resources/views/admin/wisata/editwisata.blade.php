@@ -126,6 +126,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
+
                                     </div>
                                 </div>
 
@@ -213,7 +214,7 @@
 
                                         <div class="col-auto">
                                             <img id="previewImage"
-                                                src="{{ $wisata->foto_wisata ? asset('storage/wisata/' . $wisata->foto_wisata) : '' }}"
+                                                src="{{ $wisata->foto_wisata ? asset('storage/' . $wisata->foto_wisata) : '' }}"
                                                 class="size-200 rounded-12 object-cover"
                                                 style="{{ $wisata->foto_wisata ? '' : 'display:none;' }}">
                                         </div>
@@ -235,7 +236,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>

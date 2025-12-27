@@ -137,7 +137,7 @@
                                                         <td>
                                                             <div class="d-flex items-center">
                                                                 @if ($item->foto_wisata)
-                                                                    <img src="{{ asset('storage/wisata/' . $item->foto_wisata) }}"
+                                                                    <img src="{{ asset('storage/' . $item->foto_wisata) }}"
                                                                         style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
                                                                 @else
                                                                     <img src="{{ asset('img/default.jpg') }}"
@@ -147,10 +147,11 @@
                                                         </td>
 
 
+
                                                         <td>{{ $item->nama_wisata }}</td>
                                                         <td>{{ $item->jam_buka ?? '-' }}</td>
                                                         <td>{{ $item->jam_tutup ?? '-' }}</td>
-                                                        <td>{{ $item->kategori_wisata ?? '-' }}</td>
+                                                        <td>{{ $item->kategori->kategori ?? '-' }}</td>
 
                                                         <td>
                                                             Rp
@@ -257,7 +258,7 @@
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>

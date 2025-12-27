@@ -383,7 +383,7 @@
                     <!-- TEAM 1 -->
                     <div data-anim-child="slide-up delay-1" class="col-lg-3 col-md-4 col-sm-6">
                         <div class="ratio ratio-1:1">
-                            <img src="{{ asset('template/img/team/1/2.jpg') }}" alt="image"
+                            <img src="{{ asset('template/img/team/1/image.png') }}" alt="image"
                                 class="img-ratio bg-light-1 rounded-12">
                         </div>
 
@@ -394,11 +394,11 @@
                     <!-- TEAM 2 -->
                     <div data-anim-child="slide-up delay-2" class="col-lg-3 col-md-4 col-sm-6">
                         <div class="ratio ratio-1:1">
-                            <img src="{{ asset('template/img/team/1/2.jpg') }}" alt="image"
+                            <img src="{{ asset('template/img/team/1/alfito.JPG') }}" alt="image"
                                 class="img-ratio bg-light-1 rounded-12">
                         </div>
 
-                        <h3 class="text-16 fw-500 mt-15">Alfito</h3>
+                        <h3 class="text-16 fw-500 mt-15">Rizqullah Zuhayr Alfito </h3>
                         <p class="text-14 lh-16">Informatika</p>
                     </div>
 
@@ -406,8 +406,8 @@
             </div>
         </section>
 
-
-        <section class="layout-pt-xl layout-pb-xl">
+<br><br>
+        {{-- <section class="layout-pt-xl layout-pb-xl">
             <div class="container">
                 <div class="row justify-center text-center">
                     <div class="col-auto">
@@ -443,7 +443,7 @@
 
                 </div>
             </div>
-        </section>
+        </section> --}}
 
 
 

@@ -115,7 +115,7 @@
                                 <div class="row justify-between pt-50">
                                     <div class="col-auto">
                                         <div class="text-20 fw-500">Penyedia Wisata</div>
-                                        <div class="text-15 fw-500 mt-20">LERATour</div>
+                                        <div class="text-15 fw-500 mt-20">LERATOUR</div>
                                         <div class="text-15 mt-10">
                                             Platform Wisata Terpercaya<br>
                                             Indonesia

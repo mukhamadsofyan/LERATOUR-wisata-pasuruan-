@@ -64,9 +64,9 @@
           </a> --}}
 
             @guest
-                <a href="{{ route('register') }}" class="button -sm -outline-white text-white rounded-200 ml-30">
+                {{-- <a href="{{ route('register') }}" class="button -sm -outline-white text-white rounded-200 ml-30">
                     Sign up
-                </a>
+                </a> --}}
                 <a href="{{ route('login') }}" class="button -sm -outline-white text-white rounded-200 ml-30">
                     Log in
                 </a>

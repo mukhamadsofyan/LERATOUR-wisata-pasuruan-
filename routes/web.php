@@ -11,6 +11,7 @@ use App\Http\Controllers\admin\{
     GaleriController,
     InvoiceController,
     SliderController,
+    SocialAuthController,
     TiketController
 };
 use Illuminate\Support\Facades\Mail;
@@ -21,17 +22,17 @@ use Illuminate\Support\Facades\Mail;
 |--------------------------------------------------------------------------
 */
 
-    Route::get('/test-mail', function () {
-        Mail::raw('Tes Gmail SMTP berhasil', function ($m) {
-            $m->to('emailuser@gmail.com')->subject('Tes Gmail OTP');
-        });
-
-        return 'Email terkirim';
+Route::get('/test-mail', function () {
+    Mail::raw('Tes Gmail SMTP berhasil', function ($m) {
+        $m->to('emailuser@gmail.com')->subject('Tes Gmail OTP');
     });
 
-    Route::get('/verify-email', [AuthController::class, 'form'])->name('verify.form');
-    Route::post('/verify-email', [AuthController::class, 'verify'])->name('verify.process');
-    Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
+    return 'Email terkirim';
+});
+
+Route::get('/verify-email', [AuthController::class, 'form'])->name('verify.form');
+Route::post('/verify-email', [AuthController::class, 'verify'])->name('verify.process');
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
 
 Route::get('/', [LandingpageHomeController::class, 'index'])
@@ -103,6 +104,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment/poll/{order_id}', [TiketController::class, 'pollStatus'])
         ->name('payment.poll');
 });
+
+Route::get('/auth/google', [SocialAuthController::class, 'redirectGoogle'])
+    ->name('google.login');
+
+Route::get('/auth/google/callback', [SocialAuthController::class, 'callbackGoogle']);
+
+Route::get('/auth/github', [SocialAuthController::class, 'redirectGithub'])
+    ->name('github.login');
+
+Route::get('/auth/github/callback', [SocialAuthController::class, 'callbackGithub']);
 
 /*
 |--------------------------------------------------------------------------

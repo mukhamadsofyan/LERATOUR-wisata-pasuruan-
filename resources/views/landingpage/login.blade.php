@@ -264,13 +264,13 @@
                 <span>Login dengan akun</span>
 
                 <div class="social-login">
-                    <a href="#" class="social-btn google">
+                    <a href="{{ route('google.login') }}" class="social-btn google">
                         <img src="https://www.svgrepo.com/show/475656/google-color.svg">
                         Login with Google
                     </a>
-                    <a href="#" class="social-btn github">
-                        <img src="https://www.svgrepo.com/show/512317/github-142.svg">
-                        Login with GitHub
+                    <a href="{{ route('github.login') }}" class="social-btn github">
+                    <img src="https://www.svgrepo.com/show/512317/github-142.svg">
+                    Login with GitHub
                     </a>
                 </div>
 
@@ -300,7 +300,7 @@
         <!-- SWITCH -->
         <div class="switch">
             <div>
-                <h2 id="switchTitle">Hello Friend!</h2>
+                <h2 id="switchTitle">Hello Sahabat LERATOUR!</h2>
                 <p id="switchText">Daftar untuk memulai perjalanan</p>
                 <button id="switchBtn">SIGN UP</button>
                 <div class="links">

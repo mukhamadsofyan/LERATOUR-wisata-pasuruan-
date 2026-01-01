@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\landingpage\HomeController as LandingpageHomeController;
 use App\Http\Controllers\admin\{
+    AdminChatController,
     WisataController,
     KategoriController,
     KeunggulanController,
@@ -14,6 +15,8 @@ use App\Http\Controllers\admin\{
     SocialAuthController,
     TiketController
 };
+use App\Http\Controllers\landingpage\UserChatController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -22,14 +25,18 @@ use Illuminate\Support\Facades\Mail;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/test-mail', function () {
-    Mail::raw('Tes Gmail SMTP berhasil', function ($m) {
-        $m->to('emailuser@gmail.com')->subject('Tes Gmail OTP');
-    });
+// Route::get('/test-mail', function () {
+//     Mail::raw('Tes Gmail SMTP berhasil', function ($m) {
+//         $m->to('emailuser@gmail.com')->subject('Tes Gmail OTP');
+//     });
 
-    return 'Email terkirim';
-});
+//     return 'Email terkirim';
+// });
 
+Route::get('/chat', [UserChatController::class, 'show'])->name('chat.user');
+
+// SEND message (user/admin)
+Route::post('/chat/{conversation}/send', [MessageController::class, 'send'])->name('chat.send');
 Route::get('/verify-email', [AuthController::class, 'form'])->name('verify.form');
 Route::post('/verify-email', [AuthController::class, 'verify'])->name('verify.process');
 Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
@@ -42,6 +49,7 @@ Route::get('/about', [LandingpageHomeController::class, 'about'])
     ->name('landingpage.about');
 Route::get('/wisata-list', [LandingpageHomeController::class, 'WisataList'])
     ->name('landingpage.WisataList');
+
 
 
 // Route::post('/tiket/selesai', [TiketController::class, 'selesai'])
@@ -171,4 +179,10 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/invoice/{id}', [\App\Http\Controllers\Admin\InvoiceController::class, 'showadmin'])
             ->name('admin.invoice.show');
+        Route::get('/chat', [AdminChatController::class, 'index'])->name('admin.chat.index');
+        Route::get('/chat/{conversation}', [AdminChatController::class, 'show'])->name('admin.chat.show');
+        Route::post(
+            '/admin/chat/{conversation}/send',
+            [AdminChatController::class, 'send']
+        )->name('chat.admin.send');
     });

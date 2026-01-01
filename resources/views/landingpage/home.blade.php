@@ -428,7 +428,7 @@
                                 <div class="tourCard__content px-10 pt-10">
                                     <div class="tourCard__location d-flex items-center text-13 text-light-2">
                                         <i class="icon-pin d-flex text-16 text-light-2 mr-5"></i>
-                                        Paris, France
+                                        Pasuruan, Indonesia
                                     </div>
 
                                     <h3 class="tourCard__title text-16 fw-500 mt-5">
@@ -453,9 +453,14 @@
 
                                         <div>Harga Tiket <span class="text-16 fw-500">{{ $item->harga_tiket }}</span>
                                         </div>
+                                        <a href="{{ route('chat.user') }}" class="btn btn-primary">
+                                            Chat Admin
+                                        </a>
+
                                     </div>
 
                                 </div>
+
                                 <button class="button -sm -accent-1 bg-dark-1 text-white w-100 mt-10"
                                     onclick="handleBeliTiket(
         '{{ $item->nama_wisata }}',
@@ -498,7 +503,8 @@
                                 @auth
                                     <div class="form-input mb-10">
                                         <label>Nama Pemesan</label>
-                                        <input type="text" name="nama_pemesan" value="{{ Auth::user()->name }}" readonly>
+                                        <input type="text" name="nama_pemesan" value="{{ Auth::user()->name }}"
+                                            readonly>
                                     </div>
 
                                     <div class="form-input mb-10">

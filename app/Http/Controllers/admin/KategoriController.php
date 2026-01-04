@@ -64,7 +64,13 @@ class KategoriController extends Controller
     // ================= DELETE =================
     public function destroy($id)
     {
-        $kategori = KategoriModel::findOrFail($id);
+        $kategori = KategoriModel::withCount('wisatas')->findOrFail($id);
+
+        if ($kategori->wisatas_count > 0) {
+            return redirect()->route('admin.kategori')
+                ->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh wisata.');
+        }
+
         $kategori->delete();
 
         return redirect()->route('admin.kategori')

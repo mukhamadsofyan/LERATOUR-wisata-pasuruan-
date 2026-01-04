@@ -5,8 +5,14 @@
     </script>
     <script src="{{ asset('template/js/vendors.js') }}"></script>
     <script src="{{ asset('template/js/main.js') }}"></script>
-    @flasher_render
+    {{-- @flasher_render --}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    {{-- <script>
+        toastr.success('TOASTR HIDUP 🔥');
+    </script> --}}
+
 
     <script>
         const defaultLat = -7.983908; // Malang

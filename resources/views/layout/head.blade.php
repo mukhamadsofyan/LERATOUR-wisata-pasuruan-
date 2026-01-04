@@ -20,6 +20,7 @@
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsbGZx0j7VxFqFZB6W+g5e6m0wYyX1V9z2X8R7Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
     <title>LERATOUR - Lensa Rahasia Pasuruan</title>
     {{-- {!! Toastr::css() !!} --}}

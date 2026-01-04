@@ -16,11 +16,15 @@ class KategoriModel extends Model
     ];
 
     // RELASI
+    // public function wisatas()
+    // {
+    //     return $this->hasMany(wisatamodels::class, 'kategori_wisata', 'kategori');
+    // }
     public function wisatas()
     {
-        return $this->hasMany(wisatamodels::class, 'kategori_wisata', 'kategori');
+        return $this->hasMany(wisatamodels::class, 'kategori_wisata', 'id');
     }
-        public function galery()
+    public function galery()
     {
         return $this->hasMany(UserGalery::class, 'kategori_id');
     }

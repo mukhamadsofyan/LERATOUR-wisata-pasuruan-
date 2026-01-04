@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('messages', function (Blueprint $table) {
-            //
+        Schema::table('conversations', function (Blueprint $table) {
+            $table->text('last_message')->nullable()->after('assigned_admin_id');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('messages', function (Blueprint $table) {
+        Schema::table('conversations', function (Blueprint $table) {
             //
         });
     }

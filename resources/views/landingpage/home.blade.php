@@ -442,22 +442,25 @@
                                             {{ $item->deskripsi_wisata }}
                                         </span>
                                     </div>
-
-
                                     <div
-                                        class="d-flex justify-between items-center border-1-top text-13 text-dark-1 pt-10 mt-10">
-                                        <div class="d-flex items-center">
-                                            <i class="icon-clock text-16 mr-5"></i>
-                                            {{ $item->jam_buka }} - {{ $item->jam_tutup }}
-                                        </div>
-
-                                        <div>Harga Tiket <span class="text-16 fw-500">{{ $item->harga_tiket }}</span>
-                                        </div>
-                                        <a href="{{ route('chat.user') }}" class="btn btn-primary">
-                                            Chat Admin
-                                        </a>
-
+                                    class="d-flex justify-between items-center border-1-top text-13 text-dark-1 pt-10 mt-10">
+                                    <div class="d-flex items-center">
+                                        <i class="icon-clock text-16 mr-5"></i>
+                                        {{ $item->jam_buka }} - {{ $item->jam_tutup }}
                                     </div>
+
+                                    <div>Harga Tiket <span
+                                        class="text-16 fw-500">{{ $item->harga_tiket }}</span>
+                                    </div>
+                                    @auth
+                                        @if (Auth::user()->role === 'user')
+                                                <a href="{{ route('chat.user') }}" class="btn btn-primary">
+                                                    Chat Admin
+                                                </a>
+                                                @endif
+                                            @endauth
+                                            </div>
+
 
                                 </div>
 

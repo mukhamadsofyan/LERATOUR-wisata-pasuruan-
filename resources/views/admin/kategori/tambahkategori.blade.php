@@ -82,7 +82,7 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset("template/img/dashboard/header/1.png") }}" alt="image">
                         </div>
                     </div>
                 </div>
@@ -90,12 +90,13 @@
                 <div class="dashboard__content_content">
 
                     <div class="mb-60">
-                        <h1 class="text-30">My Profile</h1>
-                        <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                        <h1 class="text-30">Kategori</h1>
+                        <p class="">Kelola kategori dan tambahkan kategori baru untuk pengelompokan data.</p>
                     </div>
 
+
                     <div class="rounded-12 bg-white shadow-2 px-40 pt-40 pb-30">
-                        <h5 class="text-20 fw-500 mb-30">Profile Details</h5>
+                        <h5 class="text-20 fw-500 mb-30">Tambah Kategori</h5>
 
                         <form method="POST" action="{{ route('admin.insertkategori') }}" enctype="multipart/form-data">
                             @csrf
@@ -105,30 +106,29 @@
                                 {{-- NAMA WISATA --}}
                                 <div class="col-md-6">
                                     <div class="form-input">
-                                        <input type="text" name="kategori" value="{{ old('kategori') }}"
-                                            required>
+                                        <input type="text" name="kategori" value="{{ old('kategori') }}" required>
                                         <label class="lh-1 text-16 text-light-1">Nama Kategori</label>
                                     </div>
                                 </div>
 
-                                    <button type="submit" class="button -md -dark-1 bg-accent-1 text-white mt-30">
-                                        Simpan kategori
-                                        <i class="icon-arrow-top-right text-16 ml-10"></i>
-                                    </button>
-                                </div>
-
+                                <button type="submit" class="button -md -dark-1 bg-accent-1 text-white mt-30">
+                                    Simpan kategori
+                                    <i class="icon-arrow-top-right text-16 ml-10"></i>
+                                </button>
                             </div>
-                        </form>
-
 
                     </div>
+                    </form>
 
-                    <div class="text-center pt-30">
-                        © Copyright LERATOUR 2025
-                    </div>
 
                 </div>
+
+                <div class="text-center pt-30">
+                    © Copyright LERATOUR 2025
+                </div>
+
             </div>
+        </div>
         </div>
     </main>
 

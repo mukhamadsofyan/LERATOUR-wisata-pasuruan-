@@ -82,7 +82,7 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset("template/img/dashboard/header/1.png") }}" alt="image">
                         </div>
                     </div>
                 </div>
@@ -90,24 +90,39 @@
                 <div class="dashboard__content_content">
 
                     <div class="mb-60">
-                        <h1 class="text-30">My Profile</h1>
-                        <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                        <h1 class="text-30">Galeri Wisata</h1>
+                        <p class="">Tambahkan Foto Galeri Terbaik.</p>
                     </div>
 
                     <div class="rounded-12 bg-white shadow-2 px-40 pt-40 pb-30">
-                        <h5 class="text-20 fw-500 mb-30">Profile Details</h5>
+                        <h5 class="text-20 fw-500 mb-30">Tambah Galeri</h5>
 
-                        <form method="POST" action="{{ route('admin.insertgaleri') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('admin.gallery.store') }}" enctype="multipart/form-data">
                             @csrf
 
                             <div class="contactForm row y-gap-30">
 
-                                {{-- NAMA WISATA --}}
+                                {{-- PILIH WISATA --}}
                                 <div class="col-md-6">
                                     <div class="form-input">
-                                        <input type="text" name="nama_wisata" value="{{ old('nama_wisata') }}"
-                                            required>
-                                        <label class="lh-1 text-16 text-light-1">Nama Wisata</label>
+                                        <select name="wisata_id" required>
+                                            <option value="">-- Pilih Wisata --</option>
+                                            @foreach ($wisatas as $w)
+                                                <option value="{{ $w->id }}"
+                                                    {{ old('wisata_id') == $w->id ? 'selected' : '' }}>
+                                                    {{ $w->nama_wisata }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <label class="lh-1 text-16 text-light-1">Wisata</label>
+                                    </div>
+                                </div>
+
+                                {{-- CAPTION --}}
+                                <div class="col-md-6">
+                                    <div class="form-input">
+                                        <input type="text" name="caption" value="{{ old('caption') }}">
+                                        <label class="lh-1 text-16 text-light-1">Caption (Opsional)</label>
                                     </div>
                                 </div>
 
@@ -117,11 +132,12 @@
 
                                     <div class="d-flex gap-20 align-items-start flex-wrap">
 
-                                        <!-- UPLOAD BOX -->
-                                        <div class="size-200 rounded-12 border-dash-1 bg-accent-1-05 flex-center flex-column"
-                                            style="position:relative;">
+                                        {{-- UPLOAD BOX --}}
+                                        <div class="size-200 rounded-12 border-dash-1 bg-accent-1-05
+                            flex-center flex-column"
+                                            style="position:relative;cursor:pointer;">
 
-                                            <input type="file" name="gambar[]" accept="image/*" multiple required
+                                            <input type="file" name="images[]" accept="image/*" multiple required
                                                 style="opacity:0;position:absolute;width:200px;height:200px;cursor:pointer;"
                                                 onchange="previewMultipleImages(event)">
 
@@ -130,16 +146,16 @@
                                             </div>
 
                                             <div class="text-13 text-light-1 mt-5 text-center">
-                                                Foto pertama akan menjadi sampul
+                                                Bisa upload banyak foto sekaligus
                                             </div>
                                         </div>
 
-                                        <!-- PREVIEW MULTIPLE -->
-                                        <div id="previewWrapper" class="d-flex gap-10 flex-wrap">
-                                        </div>
+                                        {{-- PREVIEW --}}
+                                        <div id="previewWrapper" class="d-flex gap-10 flex-wrap"></div>
 
                                     </div>
 
+                                    {{-- SUBMIT --}}
                                     <button type="submit" class="button -md -dark-1 bg-accent-1 text-white mt-30">
                                         Simpan Galeri
                                         <i class="icon-arrow-top-right text-16 ml-10"></i>
@@ -151,10 +167,11 @@
 
 
 
+
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>
@@ -164,6 +181,33 @@
 
     <!-- JavaScript -->
     @include('layout.js')
+    <script>
+        function previewMultipleImages(event) {
+            const previewWrapper = document.getElementById('previewWrapper');
+            previewWrapper.innerHTML = '';
+
+            const files = event.target.files;
+
+            if (!files) return;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    previewWrapper.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+
     <script>
         function previewImage(event) {
             const file = event.target.files[0];

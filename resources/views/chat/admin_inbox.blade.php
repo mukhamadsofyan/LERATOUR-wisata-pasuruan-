@@ -1,221 +1,472 @@
-<!doctype html>
-<html lang="id">
+<!DOCTYPE html>
+<html lang="en" data-x="html" data-x-toggle="html-overflow-hidden">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Admin Chat – Inbox</title>
+@include('layout.head')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    /* ===== CHAT HEADER ===== */
+    #chatHeader {
+        background: #fff;
+    }
 
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --secondary: #6366f1;
-            --bg: #f5f7fb;
-            --card: #ffffff;
-            --border: #e5e7eb;
-            --text: #111827;
-            --muted: #6b7280;
-        }
+    .chat-header-name {
+        font-weight: 600;
+        font-size: 16px;
+        color: #111827;
+        /* KUNCI WARNA */
+        opacity: 1 !important;
+    }
 
-        * {
-            box-sizing: border-box
-        }
+    .chat-header-status {
+        font-size: 12px;
+        color: #10b981;
+        /* hijau online */
+        opacity: 1 !important;
+    }
 
-        body {
-            margin: 0;
-            font-family: 'Inter', system-ui;
-            background: linear-gradient(135deg, #eef2ff, #f5f7fb);
-        }
+    /* ===== CHAT LIST WRAPPER ===== */
+    #chatList {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
-        .wrap {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    /* ===== CHAT ITEM ===== */
+    .chat-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fff;
+        border: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
 
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, .06);
-        }
+    /* hover */
+    .chat-item:hover {
+        background: #f3f4f6;
+    }
 
-        /* HEADER */
-        .head {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+    /* active */
+    .chat-item.active {
+        background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+        box-shadow: inset 4px 0 0 #4f46e5;
+    }
 
-        .head-title {
-            font-size: 18px;
-            font-weight: 800;
-        }
+    /* ===== AVATAR ===== */
+    .chat-list-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 
-        .admin-pill {
-            font-size: 12px;
-            background: #eef2ff;
-            color: #3730a3;
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-weight: 600;
-        }
+    /* ===== CONTENT ===== */
+    .chat-list-content {
+        flex: 1;
+        min-width: 0;
+    }
 
-        /* LIST */
-        .list a {
-            display: block;
-            padding: 16px 20px;
-            border-bottom: 1px solid #f1f1f7;
-            color: inherit;
-            text-decoration: none;
-            transition: .15s;
-        }
+    /* name */
+    .chat-list-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #111827;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        .list a:hover {
-            background: #fafafa;
-        }
+    /* preview */
+    .chat-list-preview {
+        font-size: 13px;
+        color: #6b7280;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 2px;
+    }
 
-        .row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 14px;
-        }
+    /* ===== UNREAD BADGE ===== */
+    .chat-list-badge {
+        min-width: 20px;
+        height: 20px;
+        padding: 0 6px;
+        background: #4f46e5;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .chat-item {
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+    }
 
-        .avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-        }
+    .chat-item.active {
+        background: #f3f4f6;
+        border-left: 4px solid #4f46e5;
+    }
 
-        .user {
-            font-weight: 700;
-            font-size: 15px;
-        }
+    /* ===== CHAT BODY ===== */
+    #chatBody {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        overflow-y: auto;
+        padding: 20px 10px;
+        background: #fafafa;
+        scroll-behavior: smooth;
+    }
 
-        .sub {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
+    /* ===== ROW ===== */
+    .chat-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        max-width: 100%;
+    }
 
-        /* STATUS */
-        .status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 6px;
-        }
+    /* kiri (user) */
+    .chat-row.left {
+        justify-content: flex-start;
+    }
 
-        .status.online {
-            background: #22c55e
-        }
+    /* kanan (admin) */
+    .chat-row.right {
+        justify-content: flex-end;
+    }
 
-        .status.offline {
-            background: #9ca3af
-        }
+    /* ===== AVATAR ===== */
+    .chat-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 
-        /* RIGHT */
-        .right {
-            text-align: right;
-            font-size: 12px;
-            color: var(--muted);
-        }
+    /* ===== BUBBLE ===== */
+    .chat-bubble {
+        max-width: 60%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
 
-        .badge {
-            margin-top: 6px;
-            display: inline-block;
-            min-width: 22px;
-            padding: 4px 7px;
-            border-radius: 999px;
-            background: #ef4444;
-            color: #fff;
-            font-weight: 700;
-            font-size: 11px;
-            text-align: center;
-        }
-    </style>
-</head>
+    /* USER */
+    .chat-row.left .chat-bubble {
+        background: #ffffff;
+        color: #111;
+        border-top-left-radius: 6px;
+    }
+
+    /* ADMIN */
+    .chat-row.right .chat-bubble {
+        background: linear-gradient(135deg, #4f46e5, #6366f1);
+        color: #fff;
+        border-top-right-radius: 6px;
+    }
+</style>
 
 <body>
-    <div class="wrap">
-        <div class="card">
+    @include('layout.preloader')
 
-            <!-- HEADER -->
-            <div class="head">
-                <div class="head-title">Admin Chat Inbox</div>
-                <div class="admin-pill">
-                    Login: {{ auth()->user()->name }}
+    <main>
+        <div class="dashboard -is-sidebar-visible js-dashboard">
+            @include('layout.sidebar')
+
+            <div class="dashboard__content">
+                <div class="dashboard__content_content">
+
+                    <div class="mb-30">
+                        <h1 class="text-30 fw-700">Messages</h1>
+                        <p class="text-light-1">Inbox percakapan pengguna</p>
+                    </div>
+
+                    <div class="row y-gap-30 pt-40">
+
+                        {{-- ================= LEFT ================= --}}
+                        <div class="col-lg-4">
+                            <div class="rounded-16 bg-white shadow-2 px-30 pt-30 pb-20">
+
+                                <div id="chatList">
+                                    @foreach ($conversations as $c)
+                                        {{-- <button type="button"
+                                            class="chat-item d-flex items-center gap-15 p-15 rounded-12 mb-10 w-100 text-left"
+                                            onclick="openChatById({{ $c->id }})">
+
+
+                                            <img src="{{ asset('template/img/dashboard/messages/main/4.png') }}"
+                                                class="size-50 rounded-full">
+
+                                            <div class="flex-1">
+                                                <h5 class="fw-500">{{ $c->user?->name ?? 'User' }}</h5>
+                                                <div class="text-14 text-light-1">
+                                                    {{ $c->last_message ?? 'Belum ada pesan' }}
+                                                </div>
+                                            </div>
+
+                                            @if ($c->unread_count > 0)
+                                                <div
+                                                    class="size-18 rounded-full bg-accent-2 text-white flex-center text-11">
+                                                    {{ $c->unread_count }}
+                                                </div>
+                                            @endif
+                                        </button> --}}
+                                        <button type="button" class="chat-item"
+                                            onclick="openChatById({{ $c->id }})">
+
+                                            <img src="{{ asset('template/img/dashboard/messages/main/4.png') }}"
+                                                class="chat-list-avatar">
+
+                                            <div class="chat-list-content">
+                                                <div class="chat-list-name">
+                                                    {{ $c->user?->name ?? 'User' }}
+                                                </div>
+
+                                                <div class="chat-list-preview">
+                                                    {{ $c->messages->first()?->body ?? 'Belum ada pesan' }}
+                                                </div>
+                                                <div class="chat-list-preview">
+                                                    {{ $c->last_message_at }}
+                                                </div>
+                                            </div>
+
+                                            @if ($c->unread_count > 0)
+                                                <span class="chat-list-badge">{{ $c->unread_count }}</span>
+                                            @endif
+                                        </button>
+                                    @endforeach
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        {{-- ================= RIGHT ================= --}}
+                        <div class="col-lg-8">
+                            <div class="rounded-16 bg-white shadow-2 px-40 pt-30 pb-30
+            d-flex flex-column"
+                                style="height: calc(100vh - 200px);">
+
+
+                                <div id="chatHeader" class="pb-20 border-bottom text-light-1">
+                                    Pilih chat untuk melihat pesan
+                                </div>
+
+                                <div id="chatBody" class="flex-1 overflow-auto py-30"></div>
+
+                                <div id="chatInput" class="pt-20 border-top d-none">
+                                    <div class="d-flex gap-15">
+                                        <input id="messageInput" class="border-1 rounded-200 px-20 py-15 w-100"
+                                            placeholder="Type a message">
+                                        <button onclick="sendMessage()"
+                                            class="button -md -dark-1 bg-accent-1 text-white">
+                                            Send
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
+    </main>
 
-            <!-- LIST -->
-            <div class="list">
-                @forelse($conversations as $c)
-                    <a href="{{ route('admin.chat.show', $c->id) }}">
-                        <div class="row">
+    @include('layout.js')
 
-                            <!-- LEFT -->
-                            <div class="left">
-                                <div class="avatar">
-                                    {{ strtoupper(substr($c->user?->name ?? 'U', 0, 1)) }}
-                                </div>
+    <script>
+        /* ======================================================
+                   GLOBAL STATE
+                ====================================================== */
+        window.currentChat = null;
+        window.lastMessageId = 0;
+        window.pollInterval = null;
 
-                                <div>
-                                    <div class="user">
-                                        <span class="status {{ $c->user?->is_online ? 'online' : 'offline' }}"></span>
-                                        {{ $c->user?->name ?? 'User' }}
-                                        <span style="font-weight:400;color:#6b7280">
-                                            #{{ $c->id }}
-                                        </span>
-                                    </div>
+        /* ======================================================
+           OPEN CHAT (KLIK LIST KIRI)
+        ====================================================== */
+        window.openChatById = async function(chatId) {
+            window.currentChat = chatId;
+            window.lastMessageId = 0;
 
-                                    <div class="sub">
-                                        {{ $c->last_message ?? 'Belum ada pesan' }}
-                                    </div>
-                                </div>
-                            </div>
+            // ===== ACTIVE STATE LEFT =====
+            document.querySelectorAll('.chat-item').forEach(item => {
+                if (item.getAttribute('onclick')?.includes(`(${chatId})`)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
 
-                            <!-- RIGHT -->
-                            <div class="right">
-                                {{ optional($c->last_message_at)->format('d M H:i') }}
+            try {
+                const res = await fetch(
+                    `{{ route('admin.chat.detail', ':id') }}`.replace(':id', chatId), {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }
+                );
 
-                                @if (($c->unread_count ?? 0) > 0)
-                                    <div class="badge">
-                                        {{ $c->unread_count }}
-                                    </div>
-                                @endif
-                            </div>
+                if (!res.ok) {
+                    console.error(await res.text());
+                    alert('Gagal membuka chat');
+                    return;
+                }
 
-                        </div>
-                    </a>
-                @empty
-                    <div style="padding:20px;color:#6b7280">
-                        Belum ada conversation.
-                    </div>
-                @endforelse
+                const data = await res.json();
+
+                /* ===== HEADER ===== */
+                document.getElementById('chatHeader').innerHTML = `
+    <div class="d-flex items-center gap-12">
+        <img src="{{ asset('template/img/dashboard/messages/main/4.png') }}" class="size-40 rounded-full">
+
+        <div>
+            <div class="chat-header-name">
+                ${data.conversation.name}
             </div>
-
+            <div class="chat-header-status">
+                Active
+            </div>
         </div>
     </div>
+`;
+
+
+                /* ===== BODY ===== */
+                let html = '';
+                data.messages.forEach(m => {
+                    window.lastMessageId = m.id;
+                    html += renderMessage(m);
+                });
+
+                document.getElementById('chatBody').innerHTML = html;
+                document.getElementById('chatInput').classList.remove('d-none');
+
+                scrollBottom();
+                startPolling();
+
+            } catch (err) {
+                console.error(err);
+                alert('Error membuka chat');
+            }
+        };
+
+        /* ======================================================
+           RENDER MESSAGE (KANAN / KIRI)
+        ====================================================== */
+        function renderMessage(m) {
+            const isAdmin = m.sender_role === 'admin';
+
+            return `
+        <div class="chat-row ${isAdmin ? 'right' : 'left'}">
+            ${!isAdmin ? `<img src="{{ asset('template/img/dashboard/messages/main/4.png') }}" class="chat-avatar">` : ''}
+            <div class="chat-bubble">
+                ${m.body}
+            </div>
+            ${isAdmin ? `<img src="{{ asset('template/img/dashboard/messages/main/4.png') }}" class="chat-avatar">` : ''}
+        </div>
+    `;
+        }
+
+        /* ======================================================
+           SEND MESSAGE (TANPA APPEND MANUAL)
+        ====================================================== */
+        window.sendMessage = async function() {
+            const input = document.getElementById('messageInput');
+            if (!input.value.trim() || !window.currentChat) return;
+
+            const body = input.value;
+            input.value = '';
+
+            try {
+                const res = await fetch(
+                    `{{ route('chat.admin.send', ':id') }}`.replace(':id', window.currentChat), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({
+                            body
+                        })
+                    }
+                );
+
+                if (!res.ok) {
+                    console.error(await res.text());
+                    alert('Gagal mengirim pesan');
+                }
+
+                // ❌ jangan append di sini (anti dobel)
+
+            } catch (err) {
+                console.error(err);
+                alert('Gagal mengirim pesan');
+            }
+        };
+
+        /* ======================================================
+           POLLING CHAT (AMBIL PESAN BARU)
+        ====================================================== */
+        function startPolling() {
+            if (window.pollInterval) clearInterval(window.pollInterval);
+
+            window.pollInterval = setInterval(async () => {
+                if (!window.currentChat) return;
+
+                try {
+                    const res = await fetch(
+                        `{{ route('chat.admin.poll', ':id') }}`.replace(':id', window.currentChat) +
+                        `?last_id=${window.lastMessageId}`, {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        }
+                    );
+
+                    if (!res.ok) return;
+
+                    const data = await res.json();
+
+                    data.forEach(m => {
+                        window.lastMessageId = m.id;
+                        document.getElementById('chatBody')
+                            .insertAdjacentHTML('beforeend', renderMessage(m));
+                        scrollBottom();
+                    });
+
+                } catch (err) {
+                    console.error('Polling error:', err);
+                }
+            }, 2000);
+        }
+
+        /* ======================================================
+           SCROLL KE BAWAH
+        ====================================================== */
+        function scrollBottom() {
+            const box = document.getElementById('chatBody');
+            box.scrollTop = box.scrollHeight;
+        }
+    </script>
+
 </body>
 
 </html>

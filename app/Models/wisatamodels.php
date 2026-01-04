@@ -24,6 +24,9 @@ class wisatamodels extends Model
     public function kategori()
     {
         return $this->belongsTo(KategoriModel::class, 'kategori_wisata', 'id');
-
+    }
+    public function galleries()
+    {
+        return $this->hasMany(GaleriModel::class);
     }
 }

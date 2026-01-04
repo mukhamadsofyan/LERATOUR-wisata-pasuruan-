@@ -87,36 +87,12 @@
 
         .title {
             font-weight: 700;
-            font-size: 15px
-        }
-
-        .sub {
-            font-size: 12px;
-            opacity: .9;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* ONLINE OFFLINE */
-        .status {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .status.online {
-            background: #22c55e
-        }
-
-        .status.offline {
-            background: #9ca3af
+            font-size: 15px;
         }
 
         .conv {
             font-size: 12px;
-            opacity: .9
+            opacity: .9;
         }
 
         /* ================= CHAT ================= */
@@ -131,8 +107,7 @@
         }
 
         .row {
-            display: flex;
-            gap: 10px
+            display: flex
         }
 
         .row.me {
@@ -160,12 +135,6 @@
             border-bottom-left-radius: 6px;
         }
 
-        .sys .bubble {
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            color: #9a3412;
-        }
-
         .meta {
             margin-top: 6px;
             font-size: 11px;
@@ -175,14 +144,13 @@
             gap: 6px;
         }
 
-        /* WA CHECK */
         .wa-check {
             color: #d1d5db;
-            font-weight: 600
+            font-weight: 600;
         }
 
         .wa-check.read {
-            color: #3b82f6
+            color: #3b82f6;
         }
 
         /* ================= TYPING ================= */
@@ -211,10 +179,6 @@
             font-size: 14px;
         }
 
-        textarea:focus {
-            border-color: var(--primary)
-        }
-
         button {
             border: none;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -240,10 +204,6 @@
 
             <div class="info">
                 <div class="title">Admin LERATOUR</div>
-                <div class="sub">
-                    <span id="adminDot" class="status offline"></span>
-                    <span id="adminText">Offline</span>
-                </div>
             </div>
 
             <div class="conv">#{{ $conversation->id }}</div>
@@ -287,24 +247,32 @@
 
         chat.scrollTop = chat.scrollHeight;
 
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: "{{ env('PUSHER_APP_KEY') }}",
+            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
+            forceTLS: true
+        });
+
         function appendMessage(p) {
             const row = document.createElement('div');
             row.className = 'row ' + (p.sender_role === 'user' ? 'me' : 'other');
             row.innerHTML = `
-    <div class="bubble">
-      ${p.body}
-      <div class="meta">${p.time} <span class="wa-check">✓</span></div>
-    </div>`;
+            <div class="bubble">
+                ${p.body}
+                <div class="meta">${p.time} <span class="wa-check">✓</span></div>
+            </div>`;
             chat.appendChild(row);
             chat.scrollTop = chat.scrollHeight;
         }
 
         async function send() {
             if (!body.value.trim()) return;
+
             appendMessage({
                 sender_role: 'user',
                 body: body.value,
-                time: new Date().toLocaleTimeString()
+                time: new Date().toLocaleTimeString().slice(0, 5)
             });
 
             await fetch("{{ route('chat.send', $conversation->id) }}", {
@@ -317,43 +285,19 @@
                     body: body.value
                 })
             });
+
             body.value = '';
         }
 
         sendBtn.onclick = send;
+
         body.oninput = () => {
             Echo.private('conversation.{{ $conversation->id }}')
                 .whisper('typing', {
-                    user: 'Admin'
+                    user: 'admin'
                 });
         };
 
-        /* ========== REALTIME ========== */
-        window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: "{{ env('PUSHER_APP_KEY') }}",
-            cluster: "{{ env('PUSHER_APP_CLUSTER') }}",
-            forceTLS: true
-        });
-
-        /* Online / Offline */
-        Echo.join('conversation.{{ $conversation->id }}')
-            .here(users => {
-                if (users.find(u => u.role === 'admin')) setOnline(true);
-            })
-            .joining(u => {
-                if (u.role === 'admin') setOnline(true);
-            })
-            .leaving(u => {
-                if (u.role === 'admin') setOnline(false);
-            });
-
-        function setOnline(v) {
-            adminDot.className = 'status ' + (v ? 'online' : 'offline');
-            adminText.innerText = v ? 'Online' : 'Offline';
-        }
-
-        /* Typing */
         Echo.private('conversation.{{ $conversation->id }}')
             .listenForWhisper('typing', () => {
                 typing.style.display = 'block';
@@ -361,6 +305,7 @@
                 window.t = setTimeout(() => typing.style.display = 'none', 1500);
             });
     </script>
+
 </body>
 
 </html>

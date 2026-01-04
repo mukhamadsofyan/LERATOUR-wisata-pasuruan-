@@ -82,15 +82,16 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset("template/img/dashboard/header/1.png") }}" alt="image">
                         </div>
                     </div>
                 </div>
 
                 <div class="dashboard__content_content">
 
-                    <h1 class="text-30">My Booking</h1>
-                    <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                    <h1 class="text-30">Testimoni</h1>
+                    <p class="">Cerita dan kesan pengunjung tentang layanan LERATOUR.</p>
+
                     {{-- <div class="pt-40">
                         <center><a href="/admin/tambahwisata"><button
                                     class="button -md -outline-accent-1 col-6 text-accent-1">
@@ -309,43 +310,28 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
 
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: "btn btn-success mx-2",
-                        cancelButton: "btn btn-danger mx-2"
-                    },
-                    buttonsStyling: false
-                });
-
                 document.querySelectorAll('.btn-delete').forEach(function(button) {
                     button.addEventListener('click', function(e) {
                         e.preventDefault();
 
-                        const id = this.getAttribute('data-id');
+                        const id = this.dataset.id;
                         const form = document.getElementById('delete-form-' + id);
 
-                        if (!form) {
-                            console.error('Form delete tidak ditemukan untuk ID:', id);
-                            return;
-                        }
+                        if (!form) return;
 
-                        swalWithBootstrapButtons.fire({
-                            title: "Yakin ingin menghapus?",
-                            text: "Data testimoni yang dihapus tidak bisa dikembalikan!",
-                            icon: "warning",
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Are you sure?',
+                            text: 'Data testimoni ini akan dihapus permanen!',
                             showCancelButton: true,
-                            confirmButtonText: "Ya, hapus!",
-                            cancelButtonText: "Batal",
+
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'No, cancel!',
+
                             reverseButtons: true
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 form.submit();
-                            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                swalWithBootstrapButtons.fire({
-                                    title: "Dibatalkan",
-                                    text: "Data testimoni aman 🙂",
-                                    icon: "info"
-                                });
                             }
                         });
                     });
@@ -353,6 +339,7 @@
 
             });
         </script>
+
 
 
     </body>

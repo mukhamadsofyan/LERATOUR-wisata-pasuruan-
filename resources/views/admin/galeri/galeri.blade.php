@@ -82,17 +82,18 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset('template/img/dashboard/header/1.png') }}" alt="image">
                         </div>
                     </div>
                 </div>
 
                 <div class="dashboard__content_content">
 
-                    <h1 class="text-30">My Booking</h1>
-                    <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                    <h1 class="text-30">Momen Wisata</h1>
+                    <p class="">Setiap perjalanan punya cerita, dan di sini semuanya dimulai.</p>
+
                     <div class="pt-40">
-                        <center><a href="/admin/tambahgaleri"><button
+                        <center><a href="{{ route('admin.gallery.create') }}"><button
                                     class="button -md -outline-accent-1 col-6 text-accent-1">
                                     Tambah Data
                                     <i class="icon-arrow-top-right text-16 ml-10"></i>
@@ -105,7 +106,7 @@
                                 <div class="col-auto">
                                     <button
                                         class="tabs__button text-20 lh-12 fw-500 pb-15 lg:pb-0 js-tabs-button is-tab-el-active"
-                                        data-tab-target=".-tab-item-1">Approved</button>
+                                        data-tab-target=".-tab-item-1">Galeri Admin</button>
                                 </div>
 
                             </div>
@@ -114,127 +115,299 @@
 
                                 <div class="tabs__pane -tab-item-1 is-tab-el-active">
                                     <div class="overflowAuto">
+
                                         <table class="tableTest mb-30">
                                             <thead class="bg-light-1 rounded-12">
                                                 <tr>
                                                     <th>ID</th>
-                                                    <th>Foto Sampul</th>
+                                                    <th>Foto</th>
                                                     <th>Nama Wisata</th>
+                                                    <th>Caption</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
 
                                             <tbody>
-                                                @forelse ($galeri as $item)
+                                                @forelse ($galleries as $item)
                                                     <tr>
+                                                        {{-- ID --}}
                                                         <td>#{{ $item->id }}</td>
 
-                                                        {{-- FOTO SAMPUL (GAMBAR PERTAMA) --}}
+                                                        {{-- FOTO --}}
                                                         <td>
-                                                            <img src="{{ asset('storage/' . $item->gambar[0]) }}"
+                                                            <img src="{{ asset('storage/gallery/' . $item->image) }}"
                                                                 style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
                                                         </td>
 
-                                                        {{-- NAMA WISATA --}}
-                                                        <td>{{ $item->nama_wisata }}</td>
+                                                        {{-- NAMA WISATA (RELASI) --}}
+                                                        <td>
+                                                            {{ $item->wisata->nama_wisata ?? '-' }}
+                                                        </td>
+
+                                                        {{-- CAPTION --}}
+                                                        <td>
+                                                            {{ $item->caption ?? '-' }}
+                                                        </td>
 
                                                         {{-- AKSI --}}
                                                         <td>
-                                                            <div class="d-flex items-center">
+                                                            <div class="d-flex items-center gap-10">
 
                                                                 {{-- EDIT --}}
-                                                                <a href="{{ route('admin.editgaleri', $item->id) }}"
+                                                                <a href="{{ route('admin.gallery.edit', $item->id) }}"
                                                                     class="button -dark-1 size-35 bg-light-1 rounded-full flex-center">
                                                                     <i class="icon-pencil text-14"></i>
                                                                 </a>
 
                                                                 {{-- DELETE --}}
                                                                 <button type="button"
-                                                                    class="button -dark-1 size-35 bg-light-1 rounded-full flex-center ml-10 btn-delete"
+                                                                    class="button -dark-1 size-35 bg-light-1 rounded-full flex-center btn-delete"
                                                                     data-id="{{ $item->id }}">
                                                                     <i class="icon-delete text-14"></i>
                                                                 </button>
 
+
                                                                 {{-- FORM DELETE --}}
                                                                 <form id="delete-form-{{ $item->id }}"
-                                                                    action="{{ route('admin.hapusgaleri', $item->id) }}"
+                                                                    action="{{ route('admin.gallery.destroy', $item->id) }}"
                                                                     method="POST" style="display:none;">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                 </form>
+
                                                             </div>
                                                         </td>
-
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="4" class="text-center text-muted">
+                                                        <td colspan="5" class="text-center text-muted">
                                                             Data galeri belum tersedia
                                                         </td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
                                         </table>
+
                                     </div>
                                 </div>
 
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="rounded-12 bg-white shadow-2 px-40 pt-40 pb-30 md:px-20 md:pt-20 md:mb-20 mt-60">
+                        <div class="tabs -underline-2 js-tabs">
+                            <div class="tabs__controls row x-gap-40 y-gap-10 lg:x-gap-20 js-tabs-controls">
+
+                                <div class="col-auto">
+                                    <button
+                                        class="tabs__button text-20 lh-12 fw-500 pb-15 lg:pb-0 js-tabs-button is-tab-el-active"
+                                        data-tab-target=".-tab-item-1">Galeri Pengunjung (Menunggu Persetujuan)</button>
+                                </div>
 
                             </div>
+
+                            <div class="tabs__content js-tabs-content">
+
+                                <div class="tabs__pane -tab-item-1 is-tab-el-active">
+                                    <div class="overflowAuto">
+                                        {{-- <h3 class="text-20 fw-600 mb-20">Galeri Pengunjung (Menunggu Persetujuan)</h3> --}}
+
+                                        <table class="tableTest">
+                                            <thead class="bg-light-1 rounded-12">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Foto</th>
+                                                    <th>Nama Pengunjung</th>
+                                                    <th>Kategori</th>
+                                                    <th>Judul</th>
+                                                    <th>Status</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @forelse ($userGalleries as $item)
+                                                    <tr>
+                                                        {{-- ID --}}
+                                                        <td>#{{ $item->id }}</td>
+
+                                                        {{-- FOTO --}}
+                                                        <td>
+                                                            <img src="{{ asset('storage/' . $item->image) }}"
+                                                                style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+                                                        </td>
+
+                                                        {{-- NAMA --}}
+                                                        <td>{{ $item->uploader_name ?? 'Pengunjung' }}</td>
+
+                                                        {{-- KATEGORI --}}
+                                                        <td>{{ $item->kategori->kategori ?? '-' }}</td>
+
+                                                        {{-- JUDUL --}}
+                                                        <td>{{ $item->title ?? '-' }}</td>
+
+                                                        {{-- STATUS --}}
+                                                        <td>
+                                                            @switch($item->status)
+                                                                @case('pending')
+                                                                    <span class="badge bg-warning text-dark">Menunggu</span>
+                                                                @break
+
+                                                                @case('approved')
+                                                                    <span class="badge bg-success">Diterima</span>
+                                                                @break
+
+                                                                @case('rejected')
+                                                                    <span class="badge bg-danger">Ditolak</span>
+                                                                @break
+
+                                                                @default
+                                                                    <span class="badge bg-secondary">-</span>
+                                                            @endswitch
+                                                        </td>
+
+                                                        {{-- AKSI --}}
+                                                        <td>
+                                                            <div class="d-flex gap-10">
+
+                                                                {{-- JIKA MASIH MENUNGGU --}}
+                                                                @if ($item->status === 'pending')
+                                                                    {{-- ACC --}}
+                                                                    <form
+                                                                        action="{{ route('admin.user.gallery.approve', $item->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <button
+                                                                            class="button -green-1 size-35 rounded-full flex-center"
+                                                                            title="Setujui">
+                                                                            ✓
+                                                                        </button>
+                                                                    </form>
+
+                                                                    {{-- TOLAK --}}
+                                                                    <form
+                                                                        action="{{ route('admin.user.gallery.reject', $item->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <button
+                                                                            class="button -red-1 size-35 rounded-full flex-center"
+                                                                            title="Tolak">
+                                                                            ✕
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+
+                                                                {{-- JIKA SUDAH DIPROSES --}}
+                                                                @if (in_array($item->status, ['approved', 'rejected']))
+                                                                    {{-- SAMPAH --}}
+                                                                    <form id="delete-form-{{ $item->id }}"
+                                                                        action="{{ route('admin.user.gallery.hapus', $item->id) }}"
+                                                                        method="POST" style="display:none;">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                    </form>
+
+                                                                    <button type="button"
+                                                                        class="button -dark-1 size-35 rounded-full flex-center btn-delete"
+                                                                        data-id="{{ $item->id }}" title="Hapus">
+                                                                        🗑
+                                                                    </button>
+                                                                @endif
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="7" class="text-center text-muted">
+                                                                Tidak ada galeri pengunjung
+                                                            </td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="text-center pt-30">
-                        © Copyright Viatours 2023
+                        © Copyright LERATOUR 2025
                     </div>
 
                 </div>
             </div>
-        </div>
-    </main>
+            </div>
+        </main>
 
-    <!-- JavaScript -->
-    @include('layout.js')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- JavaScript -->
+        @include('layout.js')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: "btn btn-danger"
-            },
-            // buttonsStyling: false
-        });
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
 
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const id = this.getAttribute('data-id');
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.dataset.id;
 
-                swalWithBootstrapButtons.fire({
-                    title: "Are you sure?",
-                    text: "Data wisata ini akan dihapus permanen!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, cancel!",
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('delete-form-' + id).submit();
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        swalWithBootstrapButtons.fire({
-                            title: "Cancelled",
-                            text: "Data wisata aman 🙂",
-                            icon: "error"
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Are you sure?',
+                            text: 'Data wisata ini akan dihapus permanen!',
+                            showCancelButton: true,
+
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'No, cancel!',
+
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('delete-form-' + id).submit();
+                            }
                         });
-                    }
+                    });
                 });
+
             });
-        });
-    </script>
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
 
-</body>
+                document.querySelectorAll('.btn-delete').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.dataset.id;
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Yakin menghapus galeri?',
+                            text: 'Foto galeri ini akan dihapus permanen!',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, hapus!',
+                            cancelButtonText: 'Batal',
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                document.getElementById('delete-form-' + id).submit();
+                            }
+                        });
+                    });
+                });
+
+            });
+        </script>
 
 
-<!-- Mirrored from creativelayers.net/themes/viatours-html/db-main.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 13 Dec 2025 17:58:46 GMT -->
 
-</html>
+    </body>
+
+
+    <!-- Mirrored from creativelayers.net/themes/viatours-html/db-main.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 13 Dec 2025 17:58:46 GMT -->
+
+    </html>

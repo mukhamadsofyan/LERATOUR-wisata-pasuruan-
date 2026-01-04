@@ -83,15 +83,16 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset("template/img/dashboard/header/1.png") }}" alt="image">
                         </div>
                     </div>
                 </div>
 
                 <div class="dashboard__content_content">
 
-                    <h1 class="text-30">My Booking</h1>
-                    <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                    <h1 class="text-30">Kategori</h1>
+                    <p class="">Kelola dan jelajahi kategori yang tersedia.</p>
+
                     <div class="pt-40">
                         <center><a href="{{ route('admin.tambahkategori') }}"><button
                                     class="button -md -outline-accent-1 col-6 text-accent-1">

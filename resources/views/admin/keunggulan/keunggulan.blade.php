@@ -82,15 +82,17 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset("template/img/dashboard/header/1.png") }}" alt="image">
                         </div>
                     </div>
                 </div>
 
                 <div class="dashboard__content_content">
 
-                    <h1 class="text-30">My Booking</h1>
-                    <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                    <h1 class="text-30">Keunggulan LERATOUR</h1>
+                    <p class="">Alasan utama mengapa LERATOUR menjadi pilihan terbaik untuk perjalanan wisatamu.
+                    </p>
+
                     {{-- <div class="pt-40">
                         <center><a href="/admin/tambahwisata"><button
                                     class="button -md -outline-accent-1 col-6 text-accent-1">
@@ -105,7 +107,7 @@
                                 <div class="col-auto">
                                     <button
                                         class="tabs__button text-20 lh-12 fw-500 pb-15 lg:pb-0 js-tabs-button is-tab-el-active"
-                                        data-tab-target=".-tab-item-1">Knapa Harus Japas ?</button>
+                                        data-tab-target=".-tab-item-1">Knapa Harus LERATOUR ?</button>
                                 </div>
 
                             </div>

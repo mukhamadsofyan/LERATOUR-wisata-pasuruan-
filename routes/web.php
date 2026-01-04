@@ -9,13 +9,14 @@ use App\Http\Controllers\admin\{
     KategoriController,
     KeunggulanController,
     TestimoniController,
-    GaleriController,
+    GalleryController,
+    GalleryController as AdminGalleryController,
     InvoiceController,
-    SliderController,
     SocialAuthController,
     TiketController
 };
 use App\Http\Controllers\landingpage\UserChatController;
+use App\Http\Controllers\landingpage\UserGaleryController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Mail;
 
@@ -51,15 +52,22 @@ Route::get('/wisata-list', [LandingpageHomeController::class, 'WisataList'])
     ->name('landingpage.WisataList');
 
 
-
-// Route::post('/tiket/selesai', [TiketController::class, 'selesai'])
-//     ->name('tiket.selesai');
-// Route::post('/tiket/pending', [TiketController::class, 'pending'])->name('tiket.pending');
 /*
 |--------------------------------------------------------------------------
 | AUTH
 |--------------------------------------------------------------------------
 */
+Route::get('/pages/galeri-foto', [UserGaleryController::class, 'index'])
+    ->name('gallery.index');
+
+Route::post('/pages/galeri-foto/upload', [UserGaleryController::class, 'store'])
+    ->name('gallery.store');
+Route::get('/Galery', [UserGaleryController::class, 'landingpage'])
+    ->name('gallery.all');
+Route::get('/pages/galeri-foto/success', function () {
+    return view('landingpage.galeri.afterform');
+})->name('gallery.success');
+
 Route::get('/login', [AuthController::class, 'showLogin'])
     ->name('login');
 
@@ -68,6 +76,7 @@ Route::post('/login', [AuthController::class, 'login'])
 
 Route::get('/register', [AuthController::class, 'showRegister'])
     ->name('register');
+
 
 Route::post('/register', [AuthController::class, 'register'])
     ->name('register.process');
@@ -134,11 +143,6 @@ Route::middleware(['auth', 'admin'])
 
         Route::get('/dashboard', [WisataController::class, 'index'])
             ->name('admin.dashboard');
-
-        // Slider
-        Route::get('/admin/slider', [SliderController::class, 'slider'])->name('admin.slider');
-        Route::get('/admin/editslider/{id}', [SliderController::class, 'editslider'])->name('admin.editslider');
-        Route::put('/admin/updateslider/{id}', [SliderController::class, 'updateslider'])->name('admin.updateslider');
         // Kategori
         Route::get('/admin/kategori', [KategoriController::class, 'kategori'])->name('admin.kategori');
         Route::get('/admin/tambahkategori', [KategoriController::class, 'tambahkategori'])->name('admin.tambahkategori');
@@ -166,23 +170,66 @@ Route::middleware(['auth', 'admin'])
         Route::post('/testimonial/{id}/reject', [TestimoniController::class, 'reject'])->name('admin.testimonial.reject');
         Route::delete('/testimonial/{id}', [TestimoniController::class, 'delete'])->name('admin.testimonial.delete');
         // Galeri
-        Route::get('/admin/galeri', [GaleriController::class, 'index'])->name('admin.galeri');
-        Route::get('/admin/tambahgaleri', [GaleriController::class, 'tambahgaleri'])->name('admin.tambahgaleri');
-        Route::post('/admin/insertgaleri', [GaleriController::class, 'insertgaleri'])->name('admin.insertgaleri');
-        Route::get('/admin/editgaleri/{id}', [GaleriController::class, 'editgaleri'])->name('admin.editgaleri');
-        Route::put('/admin/updategaleri/{id}', [GaleriController::class, 'updategaleri'])->name('admin.updategaleri');
-        Route::delete('/admin/hapusgaleri/{id}', [GaleriController::class, 'hapusgaleri'])->name('admin.hapusgaleri');
+        Route::get('gallery', [GalleryController::class, 'index'])
+            ->name('admin.gallery.index');
 
+        Route::get('gallery/create', [GalleryController::class, 'create'])
+            ->name('admin.gallery.create');
+
+        Route::post('gallery', [GalleryController::class, 'store'])
+            ->name('admin.gallery.store');
+
+        Route::get('gallery/{gallery}/edit', [GalleryController::class, 'edit'])
+            ->name('admin.gallery.edit');
+
+        Route::put('gallery/{gallery}', [GalleryController::class, 'update'])
+            ->name('admin.gallery.update');
+
+        Route::delete('gallery/{gallery}', [GalleryController::class, 'destroy'])
+            ->name('admin.gallery.destroy');
         // Invoice Admin
         Route::get('/invoice-admin', [\App\Http\Controllers\Admin\InvoiceController::class, 'index'])
             ->name('admin.invoice');
 
         Route::get('/invoice/{id}', [\App\Http\Controllers\Admin\InvoiceController::class, 'showadmin'])
             ->name('admin.invoice.show');
-        Route::get('/chat', [AdminChatController::class, 'index'])->name('admin.chat.index');
-        Route::get('/chat/{conversation}', [AdminChatController::class, 'show'])->name('admin.chat.show');
+        Route::get('/chat', [AdminChatController::class, 'index'])
+            ->name('admin.chat.index');
+
+        Route::get(
+            '/admin/chat/{conversation}/detail',
+            [AdminChatController::class, 'detail']
+        )->name('admin.chat.detail');
+
         Route::post(
             '/admin/chat/{conversation}/send',
             [AdminChatController::class, 'send']
         )->name('chat.admin.send');
+
+        Route::get(
+            '/admin/chat/{conversation}/poll',
+            [AdminChatController::class, 'poll']
+        )->name('chat.admin.poll');
+
+        Route::get(
+            '/admin/chat/poll-list',
+            [AdminChatController::class, 'pollList']
+        )->name('admin.chat.pollList');
+        // Route::get('/gallery', [AdminGalleryController::class, 'index'])
+        //     ->name('admin.gallery.index');
+
+        Route::post(
+            '/user-gallery/{userGalery}/approve',
+            [AdminGalleryController::class, 'approve']
+        )->name('admin.user.gallery.approve');
+
+        Route::post(
+            '/user-gallery/{userGalery}/reject',
+            [AdminGalleryController::class, 'reject']
+        )->name('admin.user.gallery.reject');
+
+        Route::delete(
+            '/user-gallery/{userGalery}',
+            [AdminGalleryController::class, 'hapus']
+        )->name('admin.user.gallery.hapus');
     });

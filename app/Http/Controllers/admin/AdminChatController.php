@@ -5,89 +5,174 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
-use App\Events\MessageSent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminChatController extends Controller
 {
-    public function index()
+    /**
+     * ==================================
+     * ADMIN INBOX (HALAMAN UTAMA)
+     * ==================================
+     */
+   public function index()
+{
+    $conversations = Conversation::with([
+            'user',
+            'messages' => function ($q) {
+                $q->latest()->limit(1);
+            }
+        ])
+        ->withCount([
+            'messages as unread_count' => function ($q) {
+                $q->where('sender_role', 'user')
+                  ->whereNull('read_at');
+            }
+        ])
+        ->latest('updated_at')
+        ->get();
+
+    return view('chat.admin_inbox', compact('conversations'));
+}
+
+
+    /**
+     * ==================================
+     * DETAIL CHAT (AJAX - KANAN)
+     * ==================================
+     */
+    public function detail(Conversation $conversation)
     {
-        $conversations = Conversation::with('user')
-            ->withCount('messages')
-            ->orderByDesc('last_message_at')
-            ->paginate(20);
+        $conversation->load('user');
 
-        return view('chat.admin_inbox', compact('conversations'));
-    }
+        // Tandai pesan user sebagai dibaca
+        Message::where('conversation_id', $conversation->id)
+            ->where('sender_role', 'user')
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
 
-    public function show(Conversation $conversation)
-    {
-        $conversation->load(['user', 'messages.sender']);
+        $messages = Message::where('conversation_id', $conversation->id)
+            ->orderBy('id')
+            ->get();
 
-        return view('chat.admin_show', [
-            'conversation' => $conversation,
-            'messages' => $conversation->messages()->orderBy('id')->get(),
+        // 🔥 SAFETY FIX:
+        // Kalau conversation belum punya last_message tapi message sudah ada
+        if ($conversation->last_message === null && $messages->isNotEmpty()) {
+            $last = $messages->last();
+
+            $conversation->update([
+                'last_message'    => $last->body,
+                'last_message_at' => $last->created_at,
+            ]);
+        }
+
+        return response()->json([
+            'conversation' => [
+                'id'   => $conversation->id,
+                'name' => $conversation->user?->name ?? 'User',
+            ],
+            'messages' => $messages,
         ]);
     }
 
-    // 🔥 INI YANG SEBELUMNYA TIDAK ADA (KUNCI)
-    // public function send(Request $request, Conversation $conversation)
-    // {
-    //     $request->validate([
-    //         'body' => 'required|string|max:5000',
-    //         'transaksi_id' => 'nullable|integer',
-    //     ]);
-
-    //     // pastikan admin (sesuaikan kalau pakai role lain)
-    //     if (strtolower(Auth::user()->role ?? '') !== 'admin') {
-    //         abort(403);
-    //     }
-
-    //     //  SIMPAN PESAN KE DATABASE
-    //     $message = Message::create([
-    //         'conversation_id' => $conversation->id,
-    //         'sender_id' => Auth::id(),
-    //         'sender_role' => 'admin',
-    //         'body' => $request->body,
-    //         'type' => 'text',
-    //         'transaksi_id' => $request->transaksi_id,
-    //     ]);
-
-    //     // ✅ UPDATE INBOX (INI YANG BIKIN REFRESH AMAN)
-    //     $conversation->update([
-    //         'last_message' => $request->body,
-    //         'last_message_at' => now(),
-    //     ]);
-
-    //     // 🔔 REALTIME (opsional tapi direkomendasikan)
-    //     broadcast(new MessageSent($message))->toOthers();
-
-    //     return response()->json([
-    //         'ok' => true,
-    //         'message' => [
-    //             'body' => $message->body,
-    //             'transaksi_id' => $message->transaksi_id,
-    //             'created_at' => $message->created_at->toDateTimeString(),
-    //         ]
-    //     ]);
-    // }
+    /**
+     * ==================================
+     * ADMIN KIRIM PESAN (AJAX)
+     * ==================================
+     */
     public function send(Request $request, Conversation $conversation)
-{
-    $message = Message::create([
-        'conversation_id' => $conversation->id,
-        'sender_id' => Auth::id(),
-        'sender_role' => 'admin',
-        'body' => $request->body,
-    ]);
+    {
+        $request->validate([
+            'body' => 'required|string'
+        ]);
 
-    return response()->json([
-        'ok' => true,
-        'message' => [
-            'body' => $message->body,
-            'created_at' => $message->created_at->toDateTimeString(),
-        ]
-    ]);
-}
+        $message = Message::create([
+    'conversation_id' => $conversation->id,
+    'sender_id'       => Auth::id(), // ✅ FINAL FIX
+    'sender_role'     => 'admin',    // ⚠️ ini admin controller
+    'body'            => $request->body,
+]);
 
+$conversation->update([
+    'last_message'    => $message->body,
+    'last_message_at' => $message->created_at,
+]);
+
+
+        return response()->json([
+            'ok' => true,
+            'message' => $message
+        ]);
+    }
+
+
+    /**
+     * ==================================
+     * POLLING CHAT (KANAN)
+     * ==================================
+     */
+    public function poll(Conversation $conversation)
+    {
+        $lastId = request('last_id', 0);
+
+        $messages = Message::where('conversation_id', $conversation->id)
+            ->where('id', '>', $lastId)
+            ->orderBy('id')
+            ->get();
+
+        // 🔥 Update conversation jika ada message baru
+        if ($messages->isNotEmpty()) {
+            $last = $messages->last();
+
+            $conversation->update([
+                'last_message'    => $last->body,
+                'last_message_at' => $last->created_at,
+            ]);
+        }
+
+        return response()->json($messages);
+    }
+
+    /**
+     * ==================================
+     * POLLING LIST CHAT (KIRI)
+     * ==================================
+     */
+    public function pollList()
+    {
+        $conversations = Conversation::with('user')
+            ->withCount([
+                'messages as unread_count' => function ($q) {
+                    $q->where('sender_role', 'user')
+                        ->whereNull('read_at');
+                }
+            ])
+            ->with(['messages' => function ($q) {
+                $q->latest()->limit(1);
+            }])
+            ->orderByDesc('last_message_at')
+            ->get()
+            ->map(function ($c) {
+
+                $lastMsg = $c->messages->first();
+
+                return [
+                    'id' => $c->id,
+                    'user' => [
+                        'name' => $c->user?->name ?? 'User',
+                    ],
+                    // 🔥 AMAN: tidak bergantung last_message saja
+                    'last_message' => $c->last_message
+                        ?: ($lastMsg?->body ?? 'Belum ada pesan'),
+
+                    'last_message_at' => optional(
+                        $c->last_message_at ?? $lastMsg?->created_at
+                    )->format('H:i'),
+
+                    'unread_count' => $c->unread_count,
+                ];
+            });
+
+        return response()->json($conversations);
+    }
 }

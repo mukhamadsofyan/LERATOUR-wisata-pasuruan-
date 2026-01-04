@@ -1,3 +1,63 @@
+<style>
+    /* ===== PAGES NAV ===== */
+    .nav-pages {
+        position: relative;
+    }
+
+    .nav-pages__trigger {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .nav-pages__icon {
+        font-size: 12px;
+        transition: transform .25s ease;
+    }
+
+    /* rotate icon */
+    .nav-pages:hover .nav-pages__icon {
+        transform: rotate(180deg);
+    }
+
+    /* dropdown */
+    .nav-pages__dropdown {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        min-width: 190px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
+        padding: 10px 0;
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: .25s ease;
+        z-index: 99;
+    }
+
+    /* show */
+    .nav-pages:hover .nav-pages__dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* item */
+    .nav-pages__dropdown a {
+        display: block;
+        padding: 10px 18px;
+        font-size: 15px;
+        color: #05073C;
+        transition: background .2s ease;
+    }
+
+    .nav-pages__dropdown a:hover {
+        background: #f5f7fa;
+    }
+</style>
 <header class="header -type-8 js-header">
     <div data-anim="fade delay-3" class="header__container container">
         <div class="headerMobile__left">
@@ -15,33 +75,35 @@
                 <div class="xl:d-none ml-30">
                     <div class="desktopNav -light">
 
-
                         <div class="desktopNav__item">
-                            <a href="{{ route('landingpage.home') }}">
-                                Home
-                            </a>
+                            <a href="{{ route('landingpage.home') }}">Home</a>
                         </div>
 
                         <div class="desktopNav__item">
-                            <a href="{{ route('landingpage.about') }}">
-                                About
-                            </a>
+                            <a href="{{ route('landingpage.about') }}">About</a>
                         </div>
-                        {{-- <div class="desktopNav__item">
-                            <a href="{{ route('landingpage.WisataList') }}">
-                                Semua Wisata
-                            </a>
-                        </div> --}}
-
 
                         <div class="desktopNav__item">
-                            <a href="{{ route('user.testimonial.form') }}">
-                                Testimoni
-                            </a>
+                            <a href="{{ route('user.testimonial.form') }}">Testimoni</a>
                         </div>
+
+                        {{-- PAGES --}}
+                        <div class="desktopNav__item nav-pages">
+                            <a href="javascript:void(0)" class="nav-pages__trigger">
+                                Pages
+                                <i class="icon-chevron-down nav-pages__icon"></i>
+                            </a>
+
+                            <div class="nav-pages__dropdown">
+                                <a href="{{ route('gallery.all') }}">Galeri Wisata</a>
+                                <a href="{{ route('gallery.index') }}">Kirim Galeri</a>
+                            </div>
+                        </div>
+
                     </div>
-
                 </div>
+
+
             </div>
         </div>
 

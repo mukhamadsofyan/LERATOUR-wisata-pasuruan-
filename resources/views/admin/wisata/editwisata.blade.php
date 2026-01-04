@@ -82,7 +82,7 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset("template/img/dashboard/header/1.png") }}" alt="image">
                         </div>
                     </div>
                 </div>
@@ -90,12 +90,12 @@
                 <div class="dashboard__content_content">
 
                     <div class="mb-60">
-                        <h1 class="text-30">My Profile</h1>
-                        <p class="">Lorem ipsum dolor sit amet, consectetur.</p>
+                        <h1 class="text-30">Manajemen Wisata</h1>
+                        <p class="">Kelola data destinasi wisata yang ditampilkan pada website LERATOUR.</p>
                     </div>
 
                     <div class="rounded-12 bg-white shadow-2 px-40 pt-40 pb-30">
-                        <h5 class="text-20 fw-500 mb-30">Profile Details</h5>
+                        <h5 class="text-20 fw-500 mb-30">Edit Wisata</h5>
 
                         <form method="POST" action="{{ route('admin.updatewisata', $wisata->id) }}"
                             enctype="multipart/form-data">

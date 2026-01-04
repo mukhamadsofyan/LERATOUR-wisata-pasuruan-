@@ -149,6 +149,23 @@
         text-align: right;
         margin-top: 20px;
     }
+
+    /* ===== FIX KOLOM AKSI ===== */
+    /* ===== FORCE AKSI SELALU TAMPIL ===== */
+    .tableTest td:last-child,
+    .tableTest th:last-child {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: table-cell !important;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    .tableTest td:last-child button {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-flex !important;
+    }
 </style>
 
 <body>
@@ -228,7 +245,7 @@
                         </div>
 
                         <div>
-                            <img src="img/dashboard/header/1.png" alt="image">
+                            <img src="{{ asset('template/img/dashboard/header/1.png') }}" alt="image">
                         </div>
                     </div>
                 </div>
@@ -295,12 +312,10 @@
                                                         <td>{{ strtoupper($item->payment_method ?? '-') }}</td>
                                                         <td>
                                                             <button
-                                                                class="button -dark-1 size-35 bg-light-1 rounded-full flex-center btn-detail js-popup-open"
-                                                                data-popup="invoice" data-id="{{ $item->id }}">
-                                                                <i class="icon-eye text-14"></i>
+                                                                class="button -dark-1 size-35 bg-light-1 rounded-full flex-center btn-detail"
+                                                                data-id="{{ $item->id }}" title="Lihat Invoice">
+                                                                <i class="fa-regular fa-eye"></i>
                                                             </button>
-
-
                                                         </td>
                                                     </tr>
                                                 @empty
